@@ -21,7 +21,6 @@ public class Author {
     @GeneratedValue(strategy = GenerationType.AUTO)
     private Long id;
     private String name;
-    @JsonIgnore
     private String cpf;
     @OneToOne(mappedBy = "author")
     @JsonBackReference

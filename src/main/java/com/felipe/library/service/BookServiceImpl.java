@@ -7,8 +7,6 @@ import com.felipe.library.repository.BookRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.Optional;
-
 @Service
 public class BookServiceImpl implements BookService {
 
@@ -26,14 +24,32 @@ public class BookServiceImpl implements BookService {
     @Override
     public Book save(Book book) {
         if (book.getAuthor() != null) {
-            String authorCpf = book.getAuthor().getCpf();
-            String authorName = book.getAuthor().getName();
-            Author newAuthor = Author.builder().name(authorName).cpf(authorCpf).build();
-            authorRepository.save(newAuthor);
-            return bookRepository.save(book);
+
+            //Verificando se o autor foi cadastrado com nome e cpf:
+
+            if(book.getAuthor().getCpf() != null && book.getAuthor().getName() != null){
+
+                //Verificando se o autor já existe:
+
+                if(authorRepository.findByCpf(book.getAuthor().getCpf()).size() != 0){
+                    throw new RuntimeException("Autor já existe!");
+                } else {
+                    return createBookWithAuthor(book);
+                }
+            } else {
+                throw new RuntimeException("Falta Nome e/ou CPF do Autor!");
+            }
         } else {
             throw new RuntimeException("É necessário cadastrar um Autor!");
         }
+    }
+
+    private Book createBookWithAuthor(Book book) {
+        String authorCpf = book.getAuthor().getCpf();
+        String authorName = book.getAuthor().getName();
+        Author newAuthor = Author.builder().name(authorName).cpf(authorCpf).build();
+        authorRepository.save(newAuthor);
+        return bookRepository.save(book);
     }
 
     //Implementando método para atualizar Livro. Se o livro não existe, deve adicionar um livro novo.

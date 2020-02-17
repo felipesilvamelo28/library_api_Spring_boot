@@ -1,6 +1,5 @@
 package com.felipe.library.entity;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -32,4 +31,5 @@ public class Book {
             {@JoinColumn(name = "author_id", referencedColumnName = "id")}
     )
     private Author author;
+    private Double price;
 }
